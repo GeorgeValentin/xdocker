@@ -1,0 +1,15 @@
+version: '3.6'
+
+services:
+  0101:
+    image: loam2/server:1.6.3
+    volumes: 
+      - project:/data/loris
+    #build: .
+    command: /data/loris/bin/server -N0101 -I192.168.33.10:16200 -L7 -V/data/loris
+    ports:
+      - 16200:16200
+
+
+volumes: 
+  project: /project/xxx
