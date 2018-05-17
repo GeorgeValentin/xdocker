@@ -32,6 +32,7 @@ services:
       - server_0201
     command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/loris -c${central}:16300
   
+  #extra
   server_0401:
     image: $image_name
     volumes: 
