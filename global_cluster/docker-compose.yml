@@ -1,0 +1,55 @@
+version: '3.6'
+
+services:
+  # central
+  global_0101:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    ports:
+      - 16210:16210
+    command: /data/loris/bin/global -N0101 -L7  -V/data/loris -I${listen_ip}:16210
+
+  #gateway
+  global_C101:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    ports:
+      - 16213:16213
+      - 16214:16214
+    depends_on: 
+      - global_0101
+    command: /data/loris/bin/global -NC101 -L7  -V/data/loris -I${listen_ip}:16213,${listen_ip}:16214 -c${central}:16210
+  
+  #ladder
+  global_C201:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - global_0101
+      - global_C101
+    command:  /data/loris/bin/global -NC201 -L7 -V/data/loris -c${central}:16210
+  
+  #base
+  global_C301:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - global_0101
+      - global_C101
+    command: /data/loris/bin/global -NC301 -L7 -V/data/loris -c${central}:16210
+  
+  
+  #web
+  global_web:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    ports:
+      - 16212:16212
+    depends_on: 
+      - global_0101
+    command: /data/loris/bin/globalWeb -V/data/loris -I:16212
