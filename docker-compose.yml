@@ -1,10 +1,83 @@
 version: '3.6'
 
 services:
-  '1_6_3_0101':
-    image: loam2/server:1.6.3
+  # central
+  server_0101:
+    image: $image_name
     volumes: 
       -   $project:/data/loris
     ports:
-      - 16200:16200
-    command: /data/loris/bin/server -N0101 -I:16200 -L7 -V/data/loris
+      - 16300:16300
+    command: /data/loris/bin/server -N0101 -I${listen_ip}:16300 -L7 -V/data/loris
+
+  #gateway
+  server_0201:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    ports:
+      - 16303:16303
+      - 16304:16304
+    depends_on: 
+      - server_0101
+    command: /data/loris/bin/server -N0201 -I${listen_ip}:16303,${listen_ip}:16304 -L7 -V/data/loris -c${central}:16300
+  
+  #core
+  server_0301:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/loris -c${central}:16300
+  
+  server_0401:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server -N0401 -L7 -V/data/loris -c${central}:16300
+  
+  #status
+  server_C101:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server -NC101 -I${listen_ip}:16202 -L7 -V/data/loris -c${central}:16300
+  
+  #cross
+  server_8701:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server  -N8701 -L7 -V/data/loris -c${central}:16300
+  
+  #cross
+  server_CA01:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server  -NCA01 -I${listen_ip}:16207 -L7 -V/data/loris -c${central}:16300
+  
+  #web
+  web:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+    ports:
+      - 16301:16301
+    depends_on: 
+      - server_0101
+    command: /data/loris/bin/web -V/data/loris -I:16301 -c${central}:16300
