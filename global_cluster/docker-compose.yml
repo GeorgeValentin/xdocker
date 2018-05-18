@@ -6,41 +6,45 @@ services:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/global
     ports:
-      - 16210:16210
-    command: /data/loris/bin/global -N0101 -L7  -V/data/loris -I${listen_ip}:16210
+      - 16310:16310
+    command: /data/loris/bin/global -N0101 -L7  -V/data/global -I${listen_ip}:16310
 
   #gateway
   global_C101:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/global
     ports:
-      - 16213:16213
-      - 16214:16214
+      - 16313:16313
+      - 16314:16314
     depends_on: 
       - global_0101
-    command: /data/loris/bin/global -NC101 -L7  -V/data/loris -I${listen_ip}:16213,${listen_ip}:16214 -c${central}:16210
+    command: /data/loris/bin/global -NC101 -L7  -V/data/global -I${listen_ip}:16313,${listen_ip}:16314 -c${central}:16310
   
   #ladder
   global_C201:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/global
     depends_on: 
       - global_0101
       - global_C101
-    command:  /data/loris/bin/global -NC201 -L7 -V/data/loris -c${central}:16210
+    command:  /data/loris/bin/global -NC201 -L7 -V/data/global -c${central}:16310
   
   #base
   global_C301:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/global
     depends_on: 
       - global_0101
       - global_C101
-    command: /data/loris/bin/global -NC301 -L7 -V/data/loris -c${central}:16210
+    command: /data/loris/bin/global -NC301 -L7 -V/data/global -c${central}:16310
   
   
   #web
@@ -48,8 +52,9 @@ services:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/global
     ports:
-      - 16212:16212
+      - 16312:16312
     depends_on: 
       - global_0101
-    command: /data/loris/bin/globalWeb -V/data/loris -I:16212
+    command: /data/loris/bin/globalWeb -V/data/global -I:16312
