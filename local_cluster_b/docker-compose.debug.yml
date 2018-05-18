@@ -6,78 +6,101 @@ services:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16300:16300
-    command: /data/loris/bin/server -N0101 -I${listen_ip}:16300 -L7 -V/data/loris
+      - 16200:16200
+    command: /data/loris/bin/server -N0101 -I${listen_ip}:16200 -L7 -V/data/server/${version_name}
 
   #gateway
   server_0201:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16303:16303
-      - 16304:16304
+      - 16203:16203
+      - 16204:16204
     depends_on: 
       - server_0101
-    command: /data/loris/bin/server -N0201 -I${listen_ip}:16303,${listen_ip}:16304 -L7 -V/data/loris -c${central}:16300
+    command: /data/loris/bin/server -N0201 -I${listen_ip}:16203,${listen_ip}:16204 -L7 -V/data/server/${version_name} -c${central}:16200
   
+  #router
+  server_C801:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
+    ports:
+      - 16206:16206
+    depends_on: 
+      - server_0101
+      - server_0201
+    command: /data/loris/bin/server -NC801 -I${listen_ip}:16206 -L7 -V/data/server/${version_name} -c${central}:16200
+  
+
   #core
   server_0301:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/loris -c${central}:16300
+    command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/server/${version_name} -c${central}:16200
   
+  #extra
   server_0401:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server -N0401 -L7 -V/data/loris -c${central}:16300
+    command: /data/loris/bin/server -N0401 -L7 -V/data/server/${version_name} -c${central}:16200
   
-  #status
-  server_C101:
-    image: $image_name
-    volumes: 
-      -   $project:/data/loris
-    depends_on: 
-      - server_0101
-      - server_0201
-    command: /data/loris/bin/server -NC101 -I${listen_ip}:16202 -L7 -V/data/loris -c${central}:16300
+  # #status
+  # server_C101:
+  #   image: $image_name
+  #   volumes: 
+  #     -   $project:/data/loris
+  #     -   $runtime_dir:/data/server/${version_name}
+  #   depends_on: 
+  #     - server_0101
+  #     - server_0201
+  #   command: /data/loris/bin/server -NC101 -I${listen_ip}:16202 -L7 -V/data/server/${version_name} -c${central}:16200
   
   #cross
   server_8701:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server  -N8701 -L7 -V/data/loris -c${central}:16300
+    command: /data/loris/bin/server  -N8701 -L7 -V/data/server/${version_name} -c${central}:16200
   
-  #cross
+  #global
   server_CA01:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server  -NCA01 -I${listen_ip}:16207 -L7 -V/data/loris -c${central}:16300
+    command: /data/loris/bin/server  -NCA01 -I${listen_ip}:16207 -L7 -V/data/server/${version_name} -c${central}:16200
   
   #web
   web:
     image: $image_name
     volumes: 
       -   $project:/data/loris
+      -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16301:16301
+      - 16201:16201
     depends_on: 
       - server_0101
-    command: /data/loris/bin/web -V/data/loris -I:16301 -c${central}:16300
+    command: /data/loris/bin/web -V/data/server/${version_name} -I:16201 -c${central}:16200
