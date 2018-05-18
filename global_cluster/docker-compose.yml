@@ -8,8 +8,8 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/global
     ports:
-      - 16310:16310
-    command: /data/loris/bin/global -N0101 -L7  -V/data/global -I${listen_ip}:16310
+      - 16810:16810
+    command: /data/loris/bin/global -N0101 -L7  -V/data/global -I${listen_ip}:16810
 
   #gateway
   global_C101:
@@ -18,11 +18,11 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/global
     ports:
-      - 16313:16313
-      - 16314:16314
+      - 16813:16813
+      - 16814:16814
     depends_on: 
       - global_0101
-    command: /data/loris/bin/global -NC101 -L7  -V/data/global -I${listen_ip}:16313,${listen_ip}:16314 -c${central}:16310
+    command: /data/loris/bin/global -NC101 -L7  -V/data/global -I${listen_ip}:16813,${listen_ip}:16814 -c${central}:16810
   
   #ladder
   global_C201:
@@ -33,7 +33,7 @@ services:
     depends_on: 
       - global_0101
       - global_C101
-    command:  /data/loris/bin/global -NC201 -L7 -V/data/global -c${central}:16310
+    command:  /data/loris/bin/global -NC201 -L7 -V/data/global -c${central}:16810
   
   #base
   global_C301:
@@ -44,7 +44,7 @@ services:
     depends_on: 
       - global_0101
       - global_C101
-    command: /data/loris/bin/global -NC301 -L7 -V/data/global -c${central}:16310
+    command: /data/loris/bin/global -NC301 -L7 -V/data/global -c${central}:16810
   
   
   #web
@@ -54,7 +54,7 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/global
     ports:
-      - 16312:16312
+      - 16812:16812
     depends_on: 
       - global_0101
-    command: /data/loris/bin/globalWeb -V/data/global -I:16312
+    command: /data/loris/bin/globalWeb -V/data/global -I:16812
