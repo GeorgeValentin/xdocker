@@ -87,6 +87,8 @@ services:
     volumes: 
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
+    ports:
+      - 16307:16307
     depends_on: 
       - server_0101
       - server_0201
