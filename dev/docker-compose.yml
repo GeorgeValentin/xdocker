@@ -1,0 +1,10 @@
+version: '3.6'
+
+services:
+  # dev
+  server_dev:
+    image: $image_name
+    volumes: 
+      -   $project:/data/loris
+      -   $project_base:/data/base
+    command: /bin/bash
