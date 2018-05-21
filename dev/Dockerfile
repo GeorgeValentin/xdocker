@@ -6,7 +6,7 @@ COPY vendor /tmp/vendor
 
 RUN \
    echo "hello world!" && \
-   yum -y update && yum clean all && \
+   #yum -y update && yum clean all && \
    yum -y install gcc automake autoconf libtool make readline-devel && yum clean all && \
    cd /tmp/vendor && tar xvzf LuaJIT-2.0.4.tar.gz && cd LuaJIT-2.0.4 && make && make install && \
    cd /tmp/vendor && rpm -ivh luajit-2.0.4-3.el7.x86_64.rpm && \
