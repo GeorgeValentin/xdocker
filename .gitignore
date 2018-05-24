@@ -12,3 +12,6 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+/db/
+*.DS_Store
+/local_cluster_a/1_7_0/

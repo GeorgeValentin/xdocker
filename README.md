@@ -6,7 +6,7 @@ docker tool for my development...
 ```bash
 
 #build image
-docker build -t xxx/server:1.6.3 .
+docker build -t xxx/server:1.7.0 .
 
 #run container with the image and attach bash shell for debug (auto clear up on exit)
 docker run -v ~/project/LOAM2/Code/en/branches/1.6.3/server:/data/loris  -it --rm xxx/server:1.6.3 /bin/bash

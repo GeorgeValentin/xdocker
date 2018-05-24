@@ -8,8 +8,8 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16300:16300
-    command: /data/loris/bin/server -N0101 -I${listen_ip}:16300 -L7 -V/data/server/${version_name}
+      - 17000:17000
+    command: /data/loris/bin/server -N0101 -I${listen_ip}:17000 -L7 -V/data/server/${version_name}
 
   #gateway
   server_0201:
@@ -18,11 +18,11 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16303:16303
-      - 16304:16304
+      - 17003:17003
+      - 17004:17004
     depends_on: 
       - server_0101
-    command: /data/loris/bin/server -N0201 -I${listen_ip}:16303,${listen_ip}:16304 -L7 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server -N0201 -I${listen_ip}:17003,${listen_ip}:17004 -L7 -V/data/server/${version_name} -c${central}:17000
   
   #router
   server_C801:
@@ -31,11 +31,11 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16306:16306
+      - 17006:17006
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server -NC801 -I${listen_ip}:16306 -L7 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server -NC801 -I${listen_ip}:17006 -L7 -V/data/server/${version_name} -c${central}:17000
 
   #core
   server_0301:
@@ -46,7 +46,7 @@ services:
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server -N0301 -L7 -A -F -M10000 -V/data/server/${version_name} -c${central}:17000
   
   #extra
   server_0401:
@@ -57,7 +57,7 @@ services:
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server -N0401 -L7 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server -N0401 -L7 -V/data/server/${version_name} -c${central}:17000
   
   # #status
   # server_C101:
@@ -68,7 +68,7 @@ services:
   #   depends_on: 
   #     - server_0101
   #     - server_0201
-  #   command: /data/loris/bin/server -NC101 -I${listen_ip}:16302 -L7 -V/data/server/${version_name} -c${central}:16300
+  #   command: /data/loris/bin/server -NC101 -I${listen_ip}:17002 -L7 -V/data/server/${version_name} -c${central}:17000
   
   #cross
   server_8701:
@@ -79,7 +79,7 @@ services:
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server  -N8701 -L7 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server  -N8701 -L7 -V/data/server/${version_name} -c${central}:17000
   
   #global
   server_CA01:
@@ -88,11 +88,11 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16307:16307
+      - 17007:17007
     depends_on: 
       - server_0101
       - server_0201
-    command: /data/loris/bin/server  -NCA01 -I${listen_ip}:16307 -L7 -V/data/server/${version_name} -c${central}:16300
+    command: /data/loris/bin/server  -NCA01 -I${listen_ip}:17007 -L7 -V/data/server/${version_name} -c${central}:17000
   
   #web
   web:
@@ -101,7 +101,7 @@ services:
       -   $project:/data/loris
       -   $runtime_dir:/data/server/${version_name}
     ports:
-      - 16301:16301
+      - 17001:17001
     depends_on: 
       - server_0101
-    command: /data/loris/bin/web -V/data/server/${version_name} -I:16301 -c${central}:16300
+    command: /data/loris/bin/web -V/data/server/${version_name} -I:17001 -c${central}:17000
